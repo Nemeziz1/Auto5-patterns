@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -19,15 +20,21 @@ public class RequestTest {
 
     @Test
     void shouldSubmitRequest() {
-        SelenideElement request = $(".form");
-        request.$("[class='input__inner'] [type='text']").setValue(String.valueOf(DataGenerator.Generate.getCityDelivery()));
+        SelenideElement request = $("[action]");
+        request.$("[class='input__inner'] [type='text']").setValue(DataGenerator.Generate.generateUserData("ru").getCity());
         request.$("[class='input__box'] [placeholder='Дата встречи']").doubleClick().sendKeys(Keys.DELETE);
-        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(String.valueOf(DataGenerator.Generate.getFirstDateDelivery()));
-        request.$("[data-test-id=name] input.input__control").setValue(String.valueOf(DataGenerator.Generate.getNameDelivery()));
-        request.$("[class='input__box'] [name='phone']").setValue(String.valueOf(DataGenerator.Generate.getPhoneDelivery()));
+        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(DataGenerator.Generate.generateFirstDeliveryDate());
+        request.$("[data-test-id=name] input.input__control").setValue(DataGenerator.Generate.generateUserData("ru").getName());
+        request.$("[class='input__box'] [name='phone']").setValue(DataGenerator.Generate.generateUserData("ru").getPhone());
         request.$("[data-test-id=agreement]").click();
         request.$("[class='button__content'] [class='button__text']").click();
-        $("[data-test-id=notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно забронирована на "));
+        $("[data-test-id=success-notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно запланирована на " + DataGenerator.Generate.generateFirstDeliveryDate()));
+        request.$("[class='input__box'] [placeholder='Дата встречи']").doubleClick().sendKeys(Keys.DELETE);
+        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(DataGenerator.Generate.generateSecondDeliveryDate());
+        request.$("[class='button__content'] [class='button__text']").click();
+        $(byText("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+        $(".notification_has-closer .button").click();
+        $("[data-test-id=success-notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно запланирована на " + DataGenerator.Generate.generateSecondDeliveryDate()));
     }
 }
 

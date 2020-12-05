@@ -2,7 +2,6 @@ package ru.netology;
 import com.github.javafaker.Faker;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,61 +12,25 @@ import java.util.Locale;
 public class DataGenerator {
 
     public static class Generate {
-        private Generate() {
-        }
+        private Generate() {}
 
-        @Value
-        public static class CityDelivery {
-            private final String city;
-        }
-
-        public static CityDelivery getCityDelivery() {
+        public static CardDelivery generateUserData(String locale) {
             Faker faker = new Faker(new Locale("ru"));
-            return new CityDelivery(faker.address().city());
+            return new CardDelivery(faker.address().city(), faker.name().fullName(), faker.phoneNumber().cellPhone());
         }
 
-        @Value
-        public static class NameDelivery {
-            private final String name;
+        public static String generateFirstDeliveryDate() {
+            LocalDate date1 = LocalDate.now().plusDays(4);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return date1.format(formatter);
         }
 
-        public static NameDelivery getNameDelivery() {
-            Faker faker = new Faker(new Locale("ru"));
-            return new NameDelivery(faker.name().fullName());
+        public static String generateSecondDeliveryDate() {
+            LocalDate date2 = LocalDate.now().plusDays(5);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            return date2.format(formatter);
         }
 
-        @Value
-        public static class PhoneDelivery {
-            private final String phone;
-        }
-
-        public static PhoneDelivery getPhoneDelivery() {
-            Faker faker = new Faker(new Locale("ru"));
-            return new PhoneDelivery(faker.phoneNumber().cellPhone());
-        }
-
-        @Value
-        public static class FirstDateDelivery {
-            private final String cardFirstDelivery;
-        }
-
-        public static FirstDateDelivery getFirstDateDelivery() {
-            LocalDate date = LocalDate.now().plusDays(5);
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            String dateInForm = date.format(dateTimeFormatter);
-            return new FirstDateDelivery(dateInForm);
-        }
-
-        @Value
-        public static class SecondDateDelivery {
-            private final String cardSecondDelivery;
-        }
-
-        public static SecondDateDelivery getSecondDateDelivery() {
-            LocalDate date = LocalDate.now().plusDays(6);
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            String dateInForm = date.format(dateTimeFormatter);
-            return new SecondDateDelivery(dateInForm);
-        }
     }
 }
+
