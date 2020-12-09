@@ -19,7 +19,7 @@ public class DataGenerator {
 
         public static CardDelivery generateUserData(String locale) {
             Faker faker = new Faker(new Locale("ru"));
-            return new CardDelivery(faker.name().lastName() + " " + faker.name().firstName(), faker.phoneNumber().phoneNumber());
+            return new CardDelivery(generateCity(),faker.name().lastName() + " " + faker.name().firstName(), faker.phoneNumber().phoneNumber());
         }
 
         public static String generateDeliveryDate(int plusDays) {

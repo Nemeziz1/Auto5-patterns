@@ -10,6 +10,7 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static ru.netology.DataGenerator.Generate.generateDeliveryDate;
 
 
 public class RequestTest {
@@ -20,29 +21,31 @@ public class RequestTest {
 
     @Test
     void shouldSubmitRequest() {
+        CardDelivery user = DataGenerator.Generate.generateUserData("ru");
         SelenideElement request = $("[action]");
-        request.$("[class='input__inner'] [type='text']").setValue(DataGenerator.Generate.generateCity());
+        request.$("[class='input__inner'] [type='text']").setValue(user.getCity());
         request.$("[class='input__box'] [placeholder='Дата встречи']").doubleClick().sendKeys(Keys.DELETE);
-        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(DataGenerator.Generate.generateDeliveryDate(4));
-        request.$("[data-test-id=name] input.input__control").setValue(DataGenerator.Generate.generateUserData("ru").getName());
-        request.$("[class='input__box'] [name='phone']").setValue(DataGenerator.Generate.generateUserData("ru").getPhone());
+        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(generateDeliveryDate(4));
+        request.$("[data-test-id=name] input.input__control").setValue(user.getName());
+        request.$("[class='input__box'] [name='phone']").setValue(user.getPhone());
         request.$("[data-test-id=agreement]").click();
         request.$("[class='button__content'] [class='button__text']").click();
-        $("[data-test-id=success-notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно запланирована на " + DataGenerator.Generate.generateDeliveryDate(4)));
+        $("[data-test-id=success-notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно запланирована на " + generateDeliveryDate(4)));
         request.$("[class='input__box'] [placeholder='Дата встречи']").doubleClick().sendKeys(Keys.DELETE);
-        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(DataGenerator.Generate.generateDeliveryDate(5));
+        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(generateDeliveryDate(5));
         request.$("[class='button__content'] [class='button__text']").click();
         $(byText("У вас уже запланирована встреча на другую дату. Перепланировать?"));
         $(".notification_has-closer .button").click();
-        $("[data-test-id=success-notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно запланирована на " + DataGenerator.Generate.generateDeliveryDate(5)));
+        $("[data-test-id=success-notification]").waitUntil(Condition.visible, 15000).shouldHave(exactText("Успешно! Встреча успешно запланирована на " + generateDeliveryDate(5)));
     }
     @Test
     void shouldNotSubmitRequest() {
         SelenideElement request = $("[action]");
-        request.$("[class='input__inner'] [type='text']").setValue(DataGenerator.Generate.generateCity());
+        CardDelivery user = DataGenerator.Generate.generateUserData("ru");
+        request.$("[class='input__inner'] [type='text']").setValue(user.getCity());
         request.$("[class='input__box'] [placeholder='Дата встречи']").doubleClick().sendKeys(Keys.DELETE);
-        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(DataGenerator.Generate.generateDeliveryDate(4));
-        request.$("[data-test-id=name] input.input__control").setValue(DataGenerator.Generate.generateUserData("ru").getName());
+        request.$("[class='input__box'] [placeholder='Дата встречи']").setValue(generateDeliveryDate(4));
+        request.$("[data-test-id=name] input.input__control").setValue(user.getName());
         request.$("[class='input__box'] [name='phone']").setValue(DataGenerator.Generate.generateInvalidPhoneNumber());
         request.$("[data-test-id=agreement]").click();
         request.$("[class='button__content'] [class='button__text']").click();
